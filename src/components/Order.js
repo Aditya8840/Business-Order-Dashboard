@@ -35,6 +35,7 @@ function Orders() {
   const [userInfo, setUserInfo] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrders, setFilteredOrders] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const dispatch = useDispatch();
   
   const [page, setPage] = useState(0);
@@ -105,9 +106,19 @@ function Orders() {
           order.product.toLowerCase().includes(query)
       );
       setFilteredOrders(filtered);
+      setIsSearching(true);
     }
     setPage(0);
   };
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (value === '') {
+      setIsSearching(false);
+    }
+  };
+
 
   return (
     <Container>
@@ -172,7 +183,7 @@ function Orders() {
         <TextField
           label="Search Orders with Customer Name"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearchInputChange}
           variant="outlined"
           margin="normal"
           fullWidth
@@ -189,7 +200,7 @@ function Orders() {
 
         {/* OrderList component with pagination */}
         <OrderList
-          orders={searchQuery ? filteredOrders : orders}
+          orders={(searchQuery && isSearching) ? filteredOrders : orders}
           page={page}
           rowsPerPage={rowsPerPage}
           setEditOrderId={setEditOrderId}
