@@ -1,6 +1,6 @@
-import React , { useState, useEffect }from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Profile from './Profile';
+import Profile from './Profile'; // Make sure to adjust path if necessary
 import OrderForm from './OrderForm';
 import OrderList from './OrderList';
 import axios from 'axios';
@@ -20,9 +20,23 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TablePagination,
+  IconButton,
 } from '@mui/material';
 import { green } from '@mui/material/colors';
+import { NavigateBefore, NavigateNext } from '@mui/icons-material'; // Ensure these icons are imported correctly
 
+const products = [
+  { name: 'Product 1', price: 29 },
+  { name: 'Product 2', price: 49 },
+  { name: 'Product 3', price: 149 },
+];
 
 function Orders() {
   const { user } = useSelector((state) => state.auth);
@@ -32,6 +46,10 @@ function Orders() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const dispatch = useDispatch();
+  
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Define rowsPerPage state
 
   useEffect(() => {
     if (user) {
@@ -78,6 +96,15 @@ function Orders() {
     setIsProfileOpen(false);
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
+
   return (
     <Container>
       {/* Header */}
@@ -86,7 +113,9 @@ function Orders() {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Dashboard
           </Typography>
-           <Button color="inherit" onClick={handleProfileOpen}>My Profile</Button>
+          <Button color="inherit" onClick={handleProfileOpen}>
+            My Profile
+          </Button>
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
@@ -121,7 +150,21 @@ function Orders() {
             Add Order
           </Button>
         </Stack>
-        <OrderList setEditOrderId={setEditOrderId} />
+        <OrderList
+          orders={orders}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          setEditOrderId={setEditOrderId}
+        />
+        <TablePagination
+          rowsPerPageOptions={[10, 20, 30]}
+          component="div"
+          count={orders.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Box>
 
       {/* Add or Edit Order Dialog */}
@@ -142,6 +185,7 @@ function Orders() {
           </DialogActions>
         </Dialog>
       )}
+
       {/* Profile Dialog */}
       <Dialog open={isProfileOpen} onClose={handleProfileClose} fullWidth maxWidth="sm">
         <DialogTitle>Profile</DialogTitle>
