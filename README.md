@@ -6,8 +6,6 @@ The Business Order Dashboard is a web application designed to help businesses ma
 
 - **Order Management**: View, add, edit, and delete orders.
 - **Customer Management**: Manage customer details and order history.
-- **Real-time Updates**: Track order statuses in real-time.
-- **Responsive Design**: Fully responsive design that works on both desktop and mobile devices.
 
 ## Technologies Used
 
@@ -15,7 +13,6 @@ The Business Order Dashboard is a web application designed to help businesses ma
 - **Redux**: A predictable state container for JavaScript apps.
 - **Material-UI**: React components for faster and easier web development.
 - **Axios**: Promise-based HTTP client for the browser and Node.js.
-- **React-Router**: Declarative routing for React.
 
 ## Setup Instructions
 
