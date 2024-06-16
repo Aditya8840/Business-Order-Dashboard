@@ -25,6 +25,7 @@ function Profile() {
             console.error('Error fetching user info: ', err);
             if (err.response && err.response.status === 401) {
                 console.error('Unauthorized - Token may be invalid or expired');
+                dispatch(logout());
             }
             });
         }
@@ -40,6 +41,7 @@ function Profile() {
 
     return (
         <div>
+        <h1>Dashboard</h1>
         <img src={profile.picture} alt="User" />
         <h3>{profile.name}</h3>
         <p>{profile.email}</p>

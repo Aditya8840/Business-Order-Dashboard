@@ -1,8 +1,7 @@
 import React from 'react';
-import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/auth/slice';
-import axios from 'axios';
 
 function Login() {
     const dispatch = useDispatch();
@@ -22,9 +21,12 @@ function Login() {
     });
   
     return (
-      <button
+      <div>
+        <h1>Google Auth</h1>
+        <button
         onClick={() => login()}
       >Google SignIn</button>
+      </div>
     );
 }
   
