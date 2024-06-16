@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrder, updateOrder } from '../store/order/slice';
+import { TextField, Select, MenuItem, InputLabel, FormControl, Button, Box } from '@mui/material';
 
 const products = [
   { name: 'Product 1', price: 29 },
@@ -8,7 +9,7 @@ const products = [
   { name: 'Product 3', price: 149 },
 ];
 
-function OrderForm({ editOrderId, setEditOrderId }) {
+function OrderForm({ editOrderId, setEditOrderId, onClose }) {
   const dispatch = useDispatch();
   const orderToEdit = useSelector((state) =>
     state.orders.orders.find((order) => order.id === editOrderId)
@@ -59,40 +60,62 @@ function OrderForm({ editOrderId, setEditOrderId }) {
     setCustomerEmail('');
     setProduct(products[0].name);
     setQuantity(1);
+    onClose();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Customer Name"
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 2 }}
+    >
+      <TextField
+        label="Customer Name"
         value={customerName}
         onChange={(e) => setCustomerName(e.target.value)}
         required
+        fullWidth
       />
-      <input
+      <TextField
+        label="Customer Email"
         type="email"
-        placeholder="Customer Email"
         value={customerEmail}
         onChange={(e) => setCustomerEmail(e.target.value)}
         required
+        fullWidth
       />
-      <select value={product} onChange={(e) => setProduct(e.target.value)}>
-        {products.map((p) => (
-          <option key={p.name} value={p.name}>
-            {p.name}
-          </option>
-        ))}
-      </select>
-      <input
+      <FormControl fullWidth required>
+        <InputLabel>Product</InputLabel>
+        <Select
+          value={product}
+          onChange={(e) => setProduct(e.target.value)}
+          label="Product"
+        >
+          {products.map((p) => (
+            <MenuItem key={p.name} value={p.name}>
+              {p.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <TextField
+        label="Quantity"
         type="number"
-        min="1"
         value={quantity}
         onChange={(e) => setQuantity(e.target.value)}
         required
+        inputProps={{ min: 1 }}
+        fullWidth
       />
-      <button type="submit">{editOrderId ? 'Update Order' : 'Add Order'}</button>
-    </form>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+        <Button onClick={onClose} color="secondary">
+          Cancel
+        </Button>
+        <Button type="submit" variant="contained" color="primary">
+          {editOrderId ? 'Update Order' : 'Add Order'}
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

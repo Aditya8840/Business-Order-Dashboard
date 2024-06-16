@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteOrder } from '../store/order/slice';
+import { List, ListItem, ListItemText, Button, Typography, Box } from '@mui/material';
 
 function OrderList({ setEditOrderId }) {
   const dispatch = useDispatch();
@@ -11,24 +12,46 @@ function OrderList({ setEditOrderId }) {
   };
 
   return (
-    <ul>
+    <List>
       {orders.map((order) => (
-        <li key={order.id}>
-          <div>
-            <p>Order ID: {order.id}</p>
-            <p>Customer Name: {order.customer_name}</p>
-            <p>Customer Email: {order.customer_email}</p>
-            <p>Product: {order.product}</p>
-            <p>Quantity: {order.quantity}</p>
-            <p>Order Value: ${order.order_value}</p>
-          </div>
-          <div>
-            <button onClick={() => setEditOrderId(order.id)}>Edit</button>
-            <button onClick={() => handleDelete(order.id)}>Delete</button>
-          </div>
-        </li>
+        <ListItem key={order.id} divider>
+          <ListItemText
+            primary={
+              <Typography variant="h6">
+                {order.customer_name}
+              </Typography>
+            }
+            secondary={
+              <React.Fragment>
+                <Typography variant="body2">
+                  Quantity: {order.quantity}
+                </Typography>
+                <Typography variant="body2">
+                  Order Value: ${order.order_value}
+                </Typography>
+              </React.Fragment>
+            }
+          />
+          <Box display="flex" alignItems="center">
+            <Button 
+              variant="outlined" 
+              color="primary" 
+              onClick={() => setEditOrderId(order.id)}
+              sx={{ mr: 1 }}
+            >
+              Edit
+            </Button>
+            <Button 
+              variant="outlined" 
+              color="secondary" 
+              onClick={() => handleDelete(order.id)}
+            >
+              Delete
+            </Button>
+          </Box>
+        </ListItem>
       ))}
-    </ul>
+    </List>
   );
 }
 
