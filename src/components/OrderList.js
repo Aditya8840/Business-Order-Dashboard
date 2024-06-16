@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteOrder } from '../store/order/slice';
 import {
   Box,
@@ -9,10 +9,8 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell,
-  IconButton,
+  TableCell
 } from '@mui/material';
-import { Pagination } from '@mui/material';
 
 const OrderList = ({ orders, page, rowsPerPage, setEditOrderId }) => {
   const dispatch = useDispatch();

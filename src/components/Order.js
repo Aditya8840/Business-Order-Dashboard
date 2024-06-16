@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Profile from './Profile'; // Make sure to adjust path if necessary
+import Profile from './Profile';
 import OrderForm from './OrderForm';
 import OrderList from './OrderList';
 import axios from 'axios';
@@ -20,23 +20,11 @@ import {
   DialogContent,
   DialogTitle,
   Stack,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
   TablePagination,
-  IconButton,
+  TextField,
 } from '@mui/material';
 import { green } from '@mui/material/colors';
-import { NavigateBefore, NavigateNext } from '@mui/icons-material'; // Ensure these icons are imported correctly
 
-const products = [
-  { name: 'Product 1', price: 29 },
-  { name: 'Product 2', price: 49 },
-  { name: 'Product 3', price: 149 },
-];
 
 function Orders() {
   const { user } = useSelector((state) => state.auth);
@@ -45,11 +33,12 @@ function Orders() {
   const [isAdding, setIsAdding] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const dispatch = useDispatch();
   
-  // Pagination state
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10); // Define rowsPerPage state
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     if (user) {
@@ -105,6 +94,21 @@ function Orders() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
+  const handleSearch = () => {
+    const query = searchQuery.trim().toLowerCase();
+    if (query === '') {
+      setFilteredOrders([]);
+    } else {
+      const filtered = orders.filter(
+        (order) =>
+          order.customer_name.toLowerCase().includes(query) ||
+          order.product.toLowerCase().includes(query)
+      );
+      setFilteredOrders(filtered);
+    }
+    setPage(0);
+  };
+
   return (
     <Container>
       {/* Header */}
@@ -129,7 +133,15 @@ function Orders() {
             Hi {getFirstName(userInfo.name)}
           </Typography>
         )}
-        <Paper elevation={3} sx={{ padding: 2, backgroundColor: green[50], display: 'flex', justifyContent: 'space-between' }}>
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 2,
+            backgroundColor: green[50],
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           <Typography variant="body1">Total Order Value</Typography>
           <Typography variant="h6" color="green">
             ${totalOrderValue}
@@ -139,7 +151,12 @@ function Orders() {
 
       {/* Orders Section */}
       <Box sx={{ marginBottom: 4 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ marginBottom: 2 }}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ marginBottom: 2 }}
+        >
           <Typography variant="h6">Orders</Typography>
           <Button
             variant="contained"
@@ -150,16 +167,39 @@ function Orders() {
             Add Order
           </Button>
         </Stack>
+
+        {/* Search input */}
+        <TextField
+          label="Search Orders with Customer Name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          variant="outlined"
+          margin="normal"
+          fullWidth
+        />
+        {/* Search button */}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSearch}
+          sx={{ marginBottom: 2 }}
+        >
+          Search
+        </Button>
+
+        {/* OrderList component with pagination */}
         <OrderList
-          orders={orders}
+          orders={searchQuery ? filteredOrders : orders}
           page={page}
           rowsPerPage={rowsPerPage}
           setEditOrderId={setEditOrderId}
         />
+
+        {/* Pagination component */}
         <TablePagination
           rowsPerPageOptions={[10, 20, 30]}
           component="div"
-          count={orders.length}
+          count={searchQuery ? filteredOrders.length : orders.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
